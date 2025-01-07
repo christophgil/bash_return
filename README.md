@@ -1,25 +1,15 @@
 # bash_return
 
-NAME
-====
-
-**bash_return**
-
-DESCRIPTION
-===========
-
-## Summary
+# Summary
 
 bash_return is a bashbuiltin which allows to return values from functions via variables.
 
-## Status
-
-Experimental. Successfully Tested:
+Status: Experimental. Successfully Tested:
 
  - Nested function calls
  - Recursive function calls
 
-## Motivation
+# Motivation
 
 The ‘return’ command in Bash has certain limitations. It can only return an integer between 0 and 255, and it can only return one value.
 Usually, the EXIT_SUCCESS or the error code is returned.
@@ -55,7 +45,7 @@ The disadvantages are:
   - The body of the function must not define a local variable identical to the return variable
     defined by the caller. The following line inside the body of the function  will break the code.
 
-local value=8
+        local value=8
 
   - The code is verbose.
   - Code checking tools like shellcheck report  false warnings:
@@ -65,7 +55,7 @@ local value=8
 
 
 
-## The novel proposed syntax
+# The novel proposed syntax
 
 The compiled builtins must be loaded once.
 
@@ -91,7 +81,7 @@ Without the option /-@/, the result is directly printed to the standard output.
 
     square 3
 
-## Benchmarks
+# Benchmarks
 
 We are doing 40000 function calls with the script /benchmark_cg_return.sh/
 
