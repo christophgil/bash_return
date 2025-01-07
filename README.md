@@ -11,7 +11,7 @@ Status: Experimental. Successfully Tested:
 
 # Usage
 
-The enclosed script can be used for compilation
+First compile:
 
     compile_C.sh  bashbuiltin_cg_return.c
 
