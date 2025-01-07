@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # Installation of dependencies
 
 Install  software packages:
