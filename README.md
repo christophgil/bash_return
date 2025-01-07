@@ -2,18 +2,22 @@
 
 # Summary
 
-bash_return is a bashbuiltin which allows to return values from functions via variables.
+bash_return is a bashbuiltin for seamlessly returning values from functions via variables.
 
 Status: Experimental. Successfully Tested:
 
  - Nested function calls
  - Recursive function calls
 
-# Usage
+# Installation
 
-First compile:
+First [Install dependencies](./INSTALL_DEPENDENCIES.md)
+
+Compile:
 
     compile_C.sh  bashbuiltin_cg_return.c
+
+# Usage
 
 The compiled builtins must be loaded once.
 
