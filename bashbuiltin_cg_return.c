@@ -6,7 +6,7 @@
 #define ANSI_RESET "\x1B[0m"
 
 #define FUNCNAME_PFX "RETURNED_FROM_"
-// ~/c/bash/test_cg_return.sh
+
 
 #define DEBUG 0
 int cg_return_init_builtin(WORD_LIST *list){
