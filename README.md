@@ -9,6 +9,38 @@ Status: Experimental. Successfully Tested:
  - Nested function calls
  - Recursive function calls
 
+# Usage
+
+The enclosed script can be used for compilation
+
+    compile_C.sh  bashbuiltin_cg_return.c
+
+The compiled builtins must be loaded once.
+
+    enable -f /home/cgille/compiled/bashbuiltin_cg_return.so cg_return_init cg_return
+
+The Bash builtin /cg_return_init/ must be called at the top of the function body.
+The result is returned with the builtin  /cg_return/.
+
+    square(){
+        cg_return_init
+        : Do something
+        cg_return $(($1*$1))
+    }
+
+When the function is called with the leading option -@, then the returned value is obtained from a
+variable whose name is stored in the global variable LAST_RETURN.  This is possible because Bash is
+not multi-threaded.
+
+    square -@  3
+    echo "Square of 3 is: ${!LAST_RETURN}"
+
+Without the option /-@/, the result is directly printed to the standard output.
+
+    square 3
+
+
+
 # Motivation
 
 The ‘return’ command in Bash has certain limitations. It can only return an integer between 0 and 255, and it can only return one value.
@@ -55,31 +87,6 @@ The disadvantages are:
 
 
 
-# The novel proposed syntax
-
-The compiled builtins must be loaded once.
-
-    enable -f /home/cgille/compiled/bashbuiltin_cg_return.so cg_return_init cg_return
-
-The Bash builtin /cg_return_init/ must be called at the top of the function body.
-The result is returned with the builtin  /cg_return/.
-
-    square(){
-        cg_return_init
-        : Do something
-        cg_return $(($1*$1))
-    }
-
-When the function is called with the leading option -@, then the returned value is obtained from a
-variable whose name is stored in the global variable LAST_RETURN.  This is possible because Bash is
-not multi-threaded.
-
-    square -@  3
-    echo "Square of 3 is: ${!LAST_RETURN}"
-
-Without the option /-@/, the result is directly printed to the standard output.
-
-    square 3
 
 # Benchmarks
 
