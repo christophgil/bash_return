@@ -14,18 +14,18 @@ my_func "Parameter for stdout"
 echo
 
 echo "--- Testing assign  return value to variable ---"
-my_func -@ "Parameter for variable assignment"
+my_func -$ "Parameter for variable assignment"
 echo " LAST_RETURN: ${!LAST_RETURN} "
 echo
 :
 echo "--- Testing nested ---"
 my_func_outer(){
     cg_return_init
-    my_func -@ inner
+    my_func -$ inner
     local from_inner=${!LAST_RETURN}
     cg_return "From outer: hello Got from inner: $from_inner"
 }
-my_func_outer -@ "para for outer"
+my_func_outer -$ "para for outer"
 echo " LAST_RETURN: ${!LAST_RETURN} "
 echo
 :
@@ -36,12 +36,12 @@ faculty(){
     if ((n==1 || n==0)); then
         cg_return 1
     else
-        faculty -@ $((n-1))
+        faculty -$ $((n-1))
         local f1=${!LAST_RETURN}
         cg_return $((n*f1))
     fi
 }
 n=5
 echo " Faculty $n"
-faculty -@ $n
+faculty -$ $n
 echo " faculty $n: ${!LAST_RETURN} "

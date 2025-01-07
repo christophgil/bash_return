@@ -11,8 +11,8 @@
 #define DEBUG 0
 int cg_return_init_builtin(WORD_LIST *list){
   char funcname[256]; *funcname=0;
-  if (posparam_count  && !strcmp(dollar_vars[1],"-@")){
-    if (DEBUG) printf("This is cg_return_init_builtin  with -@\n");
+  if (posparam_count  && !strcmp(dollar_vars[1],"-$")){
+    if (DEBUG) printf("This is cg_return_init_builtin  with -$\n");
     make_local_variable("__return_var__",0);
     bind_variable("__return_var__","",0);
     ARRAY *a=NULL;
@@ -39,7 +39,7 @@ int cg_return_init_builtin(WORD_LIST *list){
 char *cg_return_init_doc[]={
   "Initializes returning values to variable.  .",
   "",
-  "Must be first statement in function body. Called with no arguments. Shifts away a leading -@ option and sets shell variable __return_var__ to RETURNED_FROM_$FUNCNAME.",
+  "Must be first statement in function body. Called with no arguments. Shifts away a leading -$ option and sets shell variable __return_var__ to RETURNED_FROM_$FUNCNAME.",
   (char*)NULL
 };
 struct builtin cg_return_init_struct={"cg_return_init",cg_return_init_builtin,BUILTIN_ENABLED,cg_return_init_doc,"cg_return_init",0};

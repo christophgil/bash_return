@@ -20,7 +20,7 @@ case ${1:-X} in
            cg_return "The parameter of ${FUNCNAME[0]} is $1"
        }
        for((i=0;i<N;i++)); do
-           my_func -@ $i
+           my_func -$ $i
            value=${!LAST_RETURN}
            ((i%100==0)) && echo "i/$N: $i  returned value: $value"
        done

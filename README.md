@@ -32,14 +32,14 @@ The result is returned with the builtin  /cg_return/.
         cg_return $(($1*$1))
     }
 
-When the function is called with the leading option -@, then the returned value is obtained from a
+When the function is called with the leading option -$, then the returned value is obtained from a
 variable whose name is stored in the global variable LAST_RETURN.  This is possible because Bash is
 not multi-threaded.
 
-    square -@  3
+    square -$  3
     echo "Square of 3 is: ${!LAST_RETURN}"
 
-Without the option /-@/, the result is directly printed to the standard output.
+Without the option /-$/, the result is directly printed to the standard output.
 
     square 3
 
