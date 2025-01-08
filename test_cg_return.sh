@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
 enable -f ~/compiled/bashbuiltin_cg_return.so  init_retval set_retval
+
+__return_var__="This global var does not interfere with the local var with same name created by init_retval"
 :
-my_func(){
+hello_world(){
     init_retval
     : Do something
     set_retval "hello $1"
 }
-:
+echo ------------------------------------------------------------
 echo "--- Testing printing return value to  stdout ---"
-my_func "Parameter for stdout"
+hello_world 123
 echo
-
+echo ------------------------------------------------------------
 echo "--- Testing assign  return value to variable ---"
-my_func -$ "Parameter for variable assignment"
+hello_world -$ 123
 echo " RETVAL: ${!RETVAL} "
 echo
-:
+echo ------------------------------------------------------------
 echo "--- Testing nested function calls ---"
 sum(){
     init_retval
@@ -43,9 +45,8 @@ sum_of_squares(){
 
 sum_of_squares -$ 3 4
 echo " 3*3 + 4*4 is ${!RETVAL} "
-
-##########################################################
-:
+echo
+echo ------------------------------------------------------------
 echo "--- Testing recursion ---"
 faculty(){
     init_retval
@@ -61,3 +62,18 @@ faculty(){
 n=5
 faculty -$ $n
 echo " faculty of $n is ${!RETVAL} "
+echo
+echo ------------------------------------------------------------
+echo "--- Testing Not parameter ---"
+
+sum -$
+echo "The sum of nothing is ${!RETVAL}"
+sum
+echo
+echo ------------------------------------------------------------
+echo "--- Test missing init_retval ---"
+my_func_forgot_init(){
+    set_retval "Hello"
+}
+my_func_forgot_init -$
+echo "my_func_forgot_init:  ${!RETVAL}"

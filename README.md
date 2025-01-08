@@ -28,8 +28,8 @@ The compiled builtins must be loaded once.
 
     enable -f /home/cgille/compiled/bashbuiltin_set_retval.so   init_retval set_retval
 
-The Bash builtin /init_retval/ must be called at the top of the function body.
-The result of the function is set  with the builtin  /set_retval/.
+The Bash builtin *init_retval* must be called at the top of the function body.
+The result of the function is set  with the builtin *set_retval*.
 
     square(){
         init_retval
@@ -38,14 +38,14 @@ The result of the function is set  with the builtin  /set_retval/.
     }
 
 When the function is called with the leading option -$, then the returned value is obtained from a
-variable whose name is stored in the global variable /RETVAL/.  This is possible because Bash is not
+variable whose name is stored in the global variable *RETVAL*.  This is possible because Bash is not
 multi-threaded. Note that the dollar sign does not need to be quoted here because it is followed by
 a space. An unusual option character has been choosen to not interfer with other options.
 
     square -$  3
     echo "The Square of 3 is ${!RETVAL}"
 
-Without the option /-$/, the result is directly printed to the standard output.
+Without the option *-$*, the result is directly printed to the standard output.
 
     square 3
 
@@ -55,7 +55,7 @@ Without the option /-$/, the result is directly printed to the standard output.
 
 # Benchmarks
 
-We are doing 40000 function calls with the script /benchmark_set_retval.sh/
+We are doing 40000 function calls with the script *benchmark_set_retval.sh*
 
     classical      51 Seconds
     Novel method  1.2 Seconds

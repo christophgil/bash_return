@@ -32,7 +32,7 @@ Install  software packages:
     port install  sqlite3
 
 
-Important: The builtins will work with  the bash version installed by Mac ports  /opt/local/bin/bash, but not with  /bin/bash.
+Important: The builtins will work with  the bash version installed by Mac ports  */opt/local/bin/bash*, but not with  */bin/bash*.
 You might need to change to the newly installed Bash.
 The following shebang line at the top of the script might select the proper Bash version:
 
