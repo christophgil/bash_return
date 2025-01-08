@@ -13,8 +13,8 @@ cg_let(){
 
 
 my_func(){
-    LAST_RETURN=RETURNED_FROM_$FUNCNAME
-    declare -G "$LAST_RETURN=$1"
+    RETVAL=RETURNED_FROM_$FUNCNAME
+    declare -G "$RETVAL=$1"
 }
 
 my_func_slow(){
@@ -25,8 +25,8 @@ my_func_slow(){
 fast(){
     for((i=0;i<10000;i++)); do
         my_func hello2
-       local result=${!LAST_RETURN}
-        ((i%1000==0)) && echo "$i LAST_RETURN=$LAST_RETURN result=$result"
+       local result=${!RETVAL}
+        ((i%1000==0)) && echo "$i RETVAL=$RETVAL result=$result"
     done
 }
 

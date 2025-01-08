@@ -9,10 +9,10 @@
 
 
 #define DEBUG 0
-int cg_return_init_builtin(WORD_LIST *list){
+int init_retval_builtin(WORD_LIST *list){
   char funcname[256]; *funcname=0;
   if (posparam_count  && !strcmp(dollar_vars[1],"-$")){
-    if (DEBUG) printf("This is cg_return_init_builtin  with -$\n");
+    if (DEBUG) printf("This is init_retval_builtin  with -$\n");
     make_local_variable("__return_var__",0);
     bind_variable("__return_var__","",0);
     ARRAY *a=NULL;
@@ -36,17 +36,17 @@ int cg_return_init_builtin(WORD_LIST *list){
   }
   return (EXECUTION_SUCCESS);
 }
-char *cg_return_init_doc[]={
+char *init_retval_doc[]={
   "Initializes returning values to variable.  .",
   "",
   "Must be first statement in function body. Called with no arguments. Shifts away a leading -$ option and sets shell variable __return_var__ to RETURNED_FROM_$FUNCNAME.",
   (char*)NULL
 };
-struct builtin cg_return_init_struct={"cg_return_init",cg_return_init_builtin,BUILTIN_ENABLED,cg_return_init_doc,"cg_return_init",0};
+struct builtin init_retval_struct={"init_retval",init_retval_builtin,BUILTIN_ENABLED,init_retval_doc,"init_retval",0};
 
 
-int cg_return_builtin(WORD_LIST *list){
-  if (DEBUG) printf("This is cg_return_builtin\n");
+int set_retval_builtin(WORD_LIST *list){
+  if (DEBUG) printf("This is set_retval_builtin\n");
   char *val=list && list->word?list->word->word:NULL;
   SHELL_VAR *v=find_variable("__return_var__");
   if (v && local_p(v)){
@@ -54,18 +54,18 @@ int cg_return_builtin(WORD_LIST *list){
     if (DEBUG) printf("Variable __return_var__ is %s\n",n);
     if (n && *n){
       bind_global_variable(n,val?val:NULL,0);
-      bind_variable("LAST_RETURN",n,0);
+      bind_variable("RETVAL",n,0);
     }
   }else{
       if (val) puts(val);
     }
   return (EXECUTION_SUCCESS);
 }
-char *cg_return_doc[]={
+char *set_retval_doc[]={
   "Return.",
   "",
   "Usually last statement in function body.  Argument: String to be returened.",
   (char*)NULL
 };
 
-struct builtin cg_return_struct={"cg_return",cg_return_builtin,BUILTIN_ENABLED,cg_return_doc,"cg_return",0};
+struct builtin set_retval_struct={"set_retval",set_retval_builtin,BUILTIN_ENABLED,set_retval_doc,"set_retval",0};

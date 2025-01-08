@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-bb='cg_return_init cg_return'
-enable -d  $bb 2>/dev/null; enable -f /home/cgille/compiled/bashbuiltin_cg_return.so $bb
+bb='init_retval set_retval'
+enable -d  $bb 2>/dev/null; enable -f /home/cgille/compiled/bashbuiltin_set_retval.so $bb
 N=40000
 case ${1:-X} in
     c) echo "Conventional"
@@ -15,13 +15,13 @@ case ${1:-X} in
        ;;
     n) echo "Novel methdod"
        my_func(){
-           cg_return_init
+           init_retval
            : Do something
-           cg_return "The parameter of ${FUNCNAME[0]} is $1"
+           set_retval "The parameter of ${FUNCNAME[0]} is $1"
        }
        for((i=0;i<N;i++)); do
            my_func -$ $i
-           value=${!LAST_RETURN}
+           value=${!RETVAL}
            ((i%100==0)) && echo "i/$N: $i  returned value: $value"
        done
        ;;

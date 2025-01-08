@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# ~/c/bash/bashbuiltin_cg_return.c
-bb='cg_return_init cg_return'
-enable -d  $bb 2>/dev/null; enable -f /home/cgille/compiled/bashbuiltin_cg_return.so $bb
+enable -f ~/compiled/bashbuiltin_cg_return.so  init_retval set_retval
 :
 my_func(){
-    cg_return_init
+    init_retval
     : Do something
-    cg_return "hello $1"
+    set_retval "hello $1"
 }
 :
 echo "--- Testing printing return value to  stdout ---"
@@ -15,33 +13,51 @@ echo
 
 echo "--- Testing assign  return value to variable ---"
 my_func -$ "Parameter for variable assignment"
-echo " LAST_RETURN: ${!LAST_RETURN} "
+echo " RETVAL: ${!RETVAL} "
 echo
 :
-echo "--- Testing nested ---"
-my_func_outer(){
-    cg_return_init
-    my_func -$ inner
-    local from_inner=${!LAST_RETURN}
-    cg_return "From outer: hello Got from inner: $from_inner"
+echo "--- Testing nested function calls ---"
+sum(){
+    init_retval
+    local sum=0 n
+    for n in "$@"; do
+        ((sum+=n))
+    done
+    set_retval $sum
 }
-my_func_outer -$ "para for outer"
-echo " LAST_RETURN: ${!LAST_RETURN} "
-echo
+square(){
+    init_retval
+    set_retval $(($1*$1))
+}
+
+sum_of_squares(){
+    init_retval
+    local list=() n
+    for n in "$@"; do
+        square -$ $n
+        list+=(${!RETVAL})
+    done
+    sum -$ "${list[@]}"
+    set_retval ${!RETVAL}
+}
+
+sum_of_squares -$ 3 4
+echo " 3*3 + 4*4 is ${!RETVAL} "
+
+##########################################################
 :
 echo "--- Testing recursion ---"
 faculty(){
-    cg_return_init
+    init_retval
     local n=$1
     if ((n==1 || n==0)); then
-        cg_return 1
-    else
-        faculty -$ $((n-1))
-        local f1=${!LAST_RETURN}
-        cg_return $((n*f1))
+        set_retval 1
+        return 0
     fi
+    faculty -$ $((n-1))
+    local f1=${!RETVAL}
+    set_retval $((n*f1))
 }
 n=5
-echo " Faculty $n"
 faculty -$ $n
-echo " faculty $n: ${!LAST_RETURN} "
+echo " faculty of $n is ${!RETVAL} "
