@@ -2,7 +2,7 @@
 
 # Summary
 
-This  Bash extension written in C facilitates returning numeric and string values from functions.
+This  Bash extension written in C allows script functions to  return numeric or string values.
 
 Status: Experimental. Successfully Tested:
 
@@ -11,7 +11,7 @@ Status: Experimental. Successfully Tested:
 
 
 
-This Bash extension has been developed because the standard way of returning results from script functions may  cause poor performance of scripts.
+This Bash extension has been developed because the standard way of returning results from script functions often leads to poor performance of scripts.
 This well known limitation has been discussed extensively. See  [Details](./motivation.md).
 
 # Installation
