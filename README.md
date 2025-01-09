@@ -2,7 +2,7 @@
 
 # Summary
 
-This  Bash extension written in C allows script functions to  return numeric or string values.
+This  Bash extension written in C allows script functions to return numeric or string values.
 
 Status: Experimental. Successfully Tested:
 
