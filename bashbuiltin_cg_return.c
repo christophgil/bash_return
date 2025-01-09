@@ -68,25 +68,19 @@ int set_retval_builtin(WORD_LIST *list){
     report_error_in_function();
     fputs("set_retval without previous init_retval\n",stderr);
   }else{
-    char *n=v->value;
+    char *n=v->value; /* The name of the variable which will hold the return value */
     if (DEBUG) fprintf(stderr,"Variable __return_var__ is %s\n",n);
     if (n && *n){
-      if (list){
-        if (list->next && list->next->next){
-          SHELL_VAR* array=make_new_array_variable(n);
-          assign_array_var_from_word_list(array,list,0);
-        }else{
-          char *val=list->word?list->word->word:NULL;
-          bind_global_variable(n,val?val:NULL,0);
-        }
-      }
-      bind_variable("RETVAL",n,0);
+      const bool is_array=list && list->next && list->next->next; /* more than one arg */
+      SHELL_VAR *v=bind_global_variable(n,!is_array && list && list->word?list->word->word:NULL,0);
+      if (is_array) assign_array_var_from_word_list(convert_var_to_array(v),list,0);
     }else{
       for(;list;list=list->next){
         char *val=list->word->word;
         puts(val?val:"");
       }
     }
+    bind_global_variable("RETVAL",n?n:NULL,0);
   }
   return (EXECUTION_SUCCESS);
 }
@@ -117,19 +111,19 @@ int retval_to_array_builtin(WORD_LIST *list){
     fprintf(stderr,"retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    RETVAL not defined.\n",array_name);
     return EXECUTION_FAILURE;
   }
-  SHELL_VAR* array0=find_variable(r->value); /* The array defined in the previously called function  */
+  SHELL_VAR* src=find_variable(r->value); /* The array defined in the previously called function  */
   // see copy_variable() in /home/_cache/cgille/build/bash-5.2.37/variables.c
-  SHELL_VAR* array=find_variable(array_name); /* The array to be assigned */
-  if (!array || !array_p(array)){
+  SHELL_VAR* dst=find_variable(array_name); /* The array to be assigned */
+  if (!dst || !array_p(dst)){
     fprintf(stderr,"retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    Not an array.\n",array_name);
     return EXECUTION_FAILURE;
   }
-  if (array_p(array0)){
-    array_dispose(array_cell(array));    /* Free memory of current array */
-    array->value=array0->value;          /* Array component copied from array0 */
-    array0->value=(char*)array_create(); /* When array0 is eventually disposed it should not have a reference to the array component. */
+  if (array_p(src)){
+    array_dispose(array_cell(dst));    /* Free memory of current array */
+    dst->value=src->value;          /* Array component copied from src */
+    src->value=(char*)array_create(); /* When src is eventually disposed it should not have a reference to the array component. */
   }else{
-    array_insert(array_cell(array),0,array0->value);
+    array_insert(array_cell(dst),0,src->value);
   }
   return EXECUTION_SUCCESS;
 }

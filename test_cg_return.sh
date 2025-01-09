@@ -76,7 +76,7 @@ some_fibonacci -$
 typeset -n ref=$RETVAL
 array=(${ref[@]})
 echo ${array[@]}
-exit ##################
+
 echo ------------------------------------------------------------
 echo "--- Testing  empty parameter list ---"
 
