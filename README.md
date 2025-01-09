@@ -39,8 +39,8 @@ The result of the function is set  with the builtin *set_retval*.
 
 When the function is called with the leading option -$, then the returned value is obtained from a
 variable whose name is stored in the global variable *RETVAL*.  This is possible because Bash is not
-multi-threaded. Note that the dollar sign does not need to be quoted here because it is followed by
-a space. An unusual option character has been choosen to not interfer with other options.
+multi-threaded. Normally, dollar signs need to be quoted in UNIX shells. Note that the dollar sign does not need to be quoted here because it is followed by
+a space. An unusual option character has been chosen to not interfere with other options.
 
     square -$  3
     echo "The Square of 3 is ${!RETVAL}"

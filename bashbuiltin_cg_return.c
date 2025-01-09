@@ -109,31 +109,30 @@ int retval_to_array_builtin(WORD_LIST *list){
   char *array_name=list->word->word;
   SHELL_VAR *v=find_variable(array_name);
   if (!v){
-    fprintf(stderr,"  retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET"   no such variable.\n",array_name);
+    fprintf(stderr,"retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET"   no such variable.\n",array_name);
     return EXECUTION_FAILURE;
   }
   SHELL_VAR *r=find_variable("RETVAL");
   if (!r || !r->value){
-    fprintf(stderr,"  retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    RETVAL not defined.\n",array_name);
+    fprintf(stderr,"retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    RETVAL not defined.\n",array_name);
     return EXECUTION_FAILURE;
   }
   SHELL_VAR* array0=find_variable(r->value); /* The array defined in the previously called function  */
   // see copy_variable() in /home/_cache/cgille/build/bash-5.2.37/variables.c
   SHELL_VAR* array=find_variable(array_name); /* The array to be assigned */
   if (!array || !array_p(array)){
-    fprintf(stderr,"  retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    Not an array.\n",array_name);
+    fprintf(stderr,"retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    Not an array.\n",array_name);
     return EXECUTION_FAILURE;
   }
   if (array_p(array0)){
-    array_dispose(array_cell(array));
-    array->value=array0->value;
-    array0->value=NULL; //(char*)array_create();
+    array_dispose(array_cell(array));    /* Free memory of current array */
+    array->value=array0->value;          /* Array component copied from array0 */
+    array0->value=(char*)array_create(); /* When array0 is eventually disposed it should not have a reference to the array component. */
   }else{
     array_insert(array_cell(array),0,array0->value);
   }
   return EXECUTION_SUCCESS;
 }
-
 char *retval_to_array_doc[]={
   "Sets.",
   (char*)NULL
