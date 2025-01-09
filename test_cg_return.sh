@@ -31,7 +31,6 @@ square(){
     init_retval
     set_retval $(($1*$1))
 }
-
 sum_of_squares(){
     init_retval
     local list=() n
@@ -63,6 +62,21 @@ n=5
 faculty -$ $n
 echo " faculty of $n is ${!RETVAL} "
 echo
+echo ------------------------------------------------------------
+echo "--- Testing  array stdout ---"
+
+some_fibonacci(){
+    init_retval
+    set_retval 0  1  1  2  3  5  8  13  21  34  55  89  144
+}
+some_fibonacci
+
+echo "--- Testing array nameref ---"
+some_fibonacci -$
+typeset -n ref=$RETVAL
+array=(${ref[@]})
+echo ${array[@]}
+exit ##################
 echo ------------------------------------------------------------
 echo "--- Testing  empty parameter list ---"
 

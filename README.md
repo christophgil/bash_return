@@ -2,7 +2,7 @@
 
 # Summary
 
-bash_return is a Bash Extension written in C for returning values from functions.
+This  Bash extension written in C facilitates returning numeric and string values from functions.
 
 Status: Experimental. Successfully Tested:
 
@@ -12,7 +12,7 @@ Status: Experimental. Successfully Tested:
 
 
 This Bash extension has been developed because the standard way of returning results from script functions may  cause poor performance of scripts.
-This is a well knwon problem and has been discussed extensively in forums. See  [Motivation](./motivation.md) for details.
+This well known limitation has been discussed extensively. See  [Details](./motivation.md).
 
 # Installation
 
@@ -50,7 +50,9 @@ Without the option *-$*, the result is directly printed to the standard output.
     square 3
 
 
+# Arrays
 
+[Returning arrays](./arrays.md) is still experimental. Do not use this yet.
 
 
 # Benchmarks

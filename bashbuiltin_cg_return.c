@@ -63,7 +63,6 @@ struct builtin init_retval_struct={"init_retval",init_retval_builtin,BUILTIN_ENA
 
 int set_retval_builtin(WORD_LIST *list){
   if (DEBUG) fprintf(stderr,"This is set_retval_builtin\n");
-  char *val=list && list->word?list->word->word:NULL;
   SHELL_VAR *v=find_variable("__return_var__");
   if (!v || !local_p(v)){
     report_error_in_function();
@@ -72,10 +71,21 @@ int set_retval_builtin(WORD_LIST *list){
     char *n=v->value;
     if (DEBUG) fprintf(stderr,"Variable __return_var__ is %s\n",n);
     if (n && *n){
-      bind_global_variable(n,val?val:NULL,0);
+      if (list){
+        if (list->next && list->next->next){
+          SHELL_VAR* array=make_new_array_variable(n);
+          assign_array_var_from_word_list(array,list,0);
+        }else{
+          char *val=list->word?list->word->word:NULL;
+          bind_global_variable(n,val?val:NULL,0);
+        }
+      }
       bind_variable("RETVAL",n,0);
     }else{
-      if (val) puts(val);
+      for(;list;list=list->next){
+        char *val=list->word->word;
+        puts(val?val:"");
+      }
     }
   }
   return (EXECUTION_SUCCESS);
@@ -88,3 +98,44 @@ char *set_retval_doc[]={
 };
 
 struct builtin set_retval_struct={"set_retval",set_retval_builtin,BUILTIN_ENABLED,set_retval_doc,"set_retval",0};
+
+/* Is this OK?   Memory leaks? */
+
+int retval_to_array_builtin(WORD_LIST *list){
+  if (!list || !list->word->word){
+    report_error_in_function(); fprintf(stderr,"  retval_to_array - missing parameter array-name\n");
+    return EXECUTION_FAILURE;
+  }
+  char *array_name=list->word->word;
+  SHELL_VAR *v=find_variable(array_name);
+  if (!v){
+    fprintf(stderr,"  retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET"   no such variable.\n",array_name);
+    return EXECUTION_FAILURE;
+  }
+  SHELL_VAR *r=find_variable("RETVAL");
+  if (!r || !r->value){
+    fprintf(stderr,"  retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    RETVAL not defined.\n",array_name);
+    return EXECUTION_FAILURE;
+  }
+  SHELL_VAR* array0=find_variable(r->value); /* The array defined in the previously called function  */
+  // see copy_variable() in /home/_cache/cgille/build/bash-5.2.37/variables.c
+  SHELL_VAR* array=find_variable(array_name); /* The array to be assigned */
+  if (!array || !array_p(array)){
+    fprintf(stderr,"  retval_to_array "ANSI_FG_BLUE"%s"ANSI_RESET":    Not an array.\n",array_name);
+    return EXECUTION_FAILURE;
+  }
+  if (array_p(array0)){
+    array_dispose(array_cell(array));
+    array->value=array0->value;
+    array0->value=NULL; //(char*)array_create();
+  }else{
+    array_insert(array_cell(array),0,array0->value);
+  }
+  return EXECUTION_SUCCESS;
+}
+
+char *retval_to_array_doc[]={
+  "Sets.",
+  (char*)NULL
+};
+struct builtin retval_to_array_struct={"retval_to_array",retval_to_array_builtin,BUILTIN_ENABLED,retval_to_array_doc,"retval_to_array",0};
