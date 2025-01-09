@@ -1,7 +1,7 @@
 # Arrays
 
 This is not really validated. Not sure whether this is stable or whether there are memory leaks.
-This should be seen by a Bash insider first.
+This should be seen by a Bash expert first.
 
 Consider the following function which prints the first n natural numbers.
 
