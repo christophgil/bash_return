@@ -18,11 +18,11 @@ Consider the following function which prints the first n natural numbers.
 
 
 
-To capture these numbers in an array variable, call it as follows:
+To capture these numbers in an array variable, call it as follows. (Note outside of functions without *local*):
 
 
     my_seq 10
-    aa=();  retval_to_array aa
+    local aa=();  retval_to_array aa
 
 The series of numbers is in the array *aa* and can be printed as follows:
 
