@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-bb='init_retval set_retval'
-enable -d  $bb 2>/dev/null; enable -f /home/cgille/compiled/bashbuiltin_set_retval.so $bb
+enable -f ~/compiled/bashbuiltin_cg_return.so  init_retval set_retval
 N=40000
 case ${1:-X} in
     c) echo "Conventional"

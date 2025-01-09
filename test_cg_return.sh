@@ -64,7 +64,7 @@ faculty -$ $n
 echo " faculty of $n is ${!RETVAL} "
 echo
 echo ------------------------------------------------------------
-echo "--- Testing Not parameter ---"
+echo "--- Testing  empty parameter list ---"
 
 sum -$
 echo "The sum of nothing is ${!RETVAL}"
@@ -77,3 +77,15 @@ my_func_forgot_init(){
 }
 my_func_forgot_init -$
 echo "my_func_forgot_init:  ${!RETVAL}"
+echo ------------------------------------------------------------
+echo "--- Test missing set_retval ---"
+echo "There should be no carry over from previous invocation"
+my_func_forgot_set(){
+    init_retval
+    [[ -z ${1:-} ]] && return # forgot set_retval
+    set_retval "Param is $1"
+}
+my_func_forgot_set -$ 1
+echo "my_func_forgot_set:  ${!RETVAL}"
+my_func_forgot_set -$
+echo "my_func_forgot_set:  ${!RETVAL}"
