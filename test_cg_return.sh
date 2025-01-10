@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -u
-enable -f ~/compiled/bashbuiltin_cg_return.so  init_retval set_retval  retval_to_array
+enable -f ~/compiled/bashbuiltin_cg_return.so  init_retval set_retval
 
 readonly ANSI_RED=$'\e[41m'
 readonly ANSI_FG_GREEN=$'\e[32m'
@@ -8,7 +8,7 @@ readonly ANSI_RESET=$'\e[0m'
 
 assert_eq(){
     local v="$2"
-    [[ $v == '@' ]] && v="${!RETVAL:-}"
+    [[ $v == '@' ]] && v="${RETVAL:-}"
     if [[ $1 == "$v" ]]; then
         echo "${ANSI_FG_GREEN}OK$ANSI_RESET"
     else
@@ -44,7 +44,7 @@ main(){
     echo ------------------------------------------------------------
     echo "--- Testing assign  return value to variable ---"
     hello_world -$ 123
-    echo " RETVAL: ${!RETVAL} "
+    echo " RETVAL: ${RETVAL} "
     assert_eq 'hello 123' @
     echo
     echo ------------------------------------------------------------
@@ -66,14 +66,14 @@ main(){
         local list=() n
         for n in "$@"; do
             square -$ $n
-            list+=(${!RETVAL})
+            list+=(${RETVAL})
         done
         sum -$ "${list[@]}"
-        set_retval ${!RETVAL}
+        set_retval ${RETVAL}
     }
 
     sum_of_squares -$ 3 4
-    echo " 3*3 + 4*4 is ${!RETVAL} "
+    echo " 3*3 + 4*4 is ${RETVAL} "
     assert_eq '25' @
     echo
     echo ------------------------------------------------------------
@@ -86,19 +86,19 @@ main(){
             return 0
         fi
         faculty -$ $((n-1))
-        local f1=${!RETVAL}
+        local f1=${RETVAL}
         set_retval $((n*f1))
     }
     local n=5
     faculty -$ $n
-    echo " faculty of $n is ${!RETVAL} "
+    echo " faculty of $n is ${RETVAL} "
     assert_eq '120'  @
     echo
     echo ------------------------------------------------------------
     echo "--- Testing  empty parameter list ---"
 
     sum -$
-    echo "The sum of nothing is ${!RETVAL}"
+    echo "The sum of nothing is ${RETVAL}"
     assert_eq 0 @
     echo
     assert_eq 0 $(sum)
@@ -113,13 +113,13 @@ main(){
         set_retval "Param is $1"
     }
     my_func_forgot_set -$ 1
-    echo "my_func_forgot_set:  ${!RETVAL}"
+    echo "my_func_forgot_set:  ${RETVAL}"
     assert_eq 'Param is 1' @
 
     my_func_forgot_set -$
-    echo "my_func_forgot_set:  ret: '${!RETVAL:-}' "
+    echo "my_func_forgot_set:  ret: '${RETVAL:-}' "
     assert_eq '' @
-    #'${!RETVAL:-}'
+    #'${RETVAL:-}'
     #   fi
     echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     echo "--- Testing  array stdout ---"
@@ -130,13 +130,22 @@ main(){
     echo "--- Testing  array to variable ---"
     sequence -$ 10
     echo
-    local aa=('Should' 'be' 'overwritten' 'and' 'not' 'seen' 'In' 'result');    retval_to_array aa
+    local aa="${RETVAL[@]}"
     echo 'This is returned' "${aa[@]}"
     assert_eq '0 1 4 9 16 25 36 49 64 81'  "${aa[*]}"
     echo "Number of values: ${#aa[@]}"
     assert_eq 10  "${#aa[@]}"
     echo
-    $0 2
+
+    echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    echo "--- Testing  array to variable only one element ---"
+    sequence -$ 1
+    local aa="${RETVAL[@]}"
+    echo 'This is returned' "${aa[@]}"
+    assert_eq  0  "${aa[*]}"
+    assert_eq  1  "${#aa[@]}"
+
+
     echo
     echo "${ANSI_FG_GREEN}End of  $0 $ANSI_RESET"
 }
@@ -155,25 +164,9 @@ with_error1(){
     echo "${ANSI_RED}This line should not be reached. The shell has already exited.$ANSI_RESET"
 }
 
-with_error2(){
-    echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    echo "--- Testing  array to variable only one element ---"
-    sequence -$ 1
-    local aa=('Should' 'be' 'overwritten' 'and' 'not' 'seen' 'In' 'result'); retval_to_array aa
-    echo 'This is returned' "${aa[@]}"
-    assert_eq  0  "${aa[*]}"
-    assert_eq  1  "${#aa[@]}"
-    echo EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-    echo "--- Testing  array ---"
-    echo "This should rise an error:"
-    sequence -$ 1
-    local bb="This is wrong. aa should be an Array"
-    retval_to_array bb
-    echo "${ANSI_RED}This line should not be reached. The shell has already exited.$ANSI_RESET"
-}
 
 case ${1:-} in
     1) with_error1;;
-    2)        with_error2;;
+
     *)        main;;
 esac

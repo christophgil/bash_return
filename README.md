@@ -9,7 +9,7 @@ Status: Experimental. Successfully Tested:
  - Nested function calls
  - Recursive function calls
 
-Currently, two methods are used to return results from functions, both of which are error prone or lead to poor performance, respectively,
+Currently, two methods are used to return results from functions, they are either  error prone and verbose or lead to poor performance, respectively,
 see  [Details](./motivation.md).
 
 Both problems are efficiently solved with this Bash extension.
@@ -43,17 +43,31 @@ multi-threaded. Normally, dollar signs need to be quoted in UNIX shells. Note th
 a space. An unusual option character has been chosen to not interfere with other options.
 
     square -$  3
-    echo "The Square of 3 is ${!RETVAL}"
+    echo "The Square of 3 is ${RETVAL}"
 
 Without the option *-$*, the result is directly printed to the standard output.
 
     square 3
 
+# Example with Arrays
 
-# Arrays
+    my_seq(){
+        init_retval
+        local int n=$1
+        local aa=()
+        for((i=0;i<n;i++)); do
+            aa+=( $((i*i)) )
+        done
+        set_retval "${aa[@]}"
+    }
+    my_seq 10
 
-[Returning arrays](./arrays.md) is still experimental. Do not use this yet.
 
+To capture these numbers in an array variable, call it as follows.
+
+    my_seq -$ 10
+    numbers="${RETVAL[@]}"
+    echo "numbers: ${numbers[@]}"
 
 # Benchmarks
 
