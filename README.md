@@ -44,7 +44,7 @@ whose name is stored in the global variable *RETVAL*.  Usage of a global variabl
 because Bash is not multi-threaded. Normally, dollar signs need to be quoted in UNIX shells. Note
 that the dollar sign does not need to be quoted here because it is followed by a space. This rather
 unusual command line switch is unlikely to be used already.  Note that *-$* must be the first
-parameter.
+parameter. It is shifted out by *init_retval* and will not be in the argument list any more.
 
     square -$  3
     echo "The Square of 3 is ${RETVAL}"
