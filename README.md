@@ -9,10 +9,14 @@ Status: Experimental. Successfully Tested:
  - Nested function calls
  - Recursive function calls
 
-Currently, two methods are used to return results from functions, they are either  error prone and verbose or lead to poor performance, respectively,
+Currently, two methods are used to return results from functions.
+Using the output stream may cause to poor performance.
+Assigning a variable has more verbose code.
+
+
+With this Bash extension, functions can be used in both ways.
 see  [Details](./motivation.md).
 
-Both problems are efficiently solved with this Bash extension.
 
 # Installation
 
