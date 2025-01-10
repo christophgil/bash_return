@@ -4,14 +4,12 @@
 
 This  Bash extension written in C allows script functions to return numeric or string values.
 
-Status: Experimental. Successfully Tested:
+Status: Experimental
 
- - Nested function calls
- - Recursive function calls
 
-Generally, two methods are used to return results from functions.
+Generally, two modes are used to return results from functions.
 Using the output stream may cause poor performance.
-Assigning a variable in the function and obtaining its value by the caller has longer code.
+Conversely, assigning a variable in the function and obtaining its value by the caller is less compact.
 
 
 With this Bash extension, functions can be used in both ways in a very compact way.
