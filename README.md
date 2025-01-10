@@ -14,7 +14,7 @@ Using the output stream may cause poor performance.
 Assigning a variable in the function and obtaining its value by the caller has longer code.
 
 
-With this Bash extension, functions can be used in both ways.
+With this Bash extension, functions can be used in both ways in a very compact way.
 see  [Details](./motivation.md).
 
 
