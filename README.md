@@ -9,9 +9,9 @@ Status: Experimental. Successfully Tested:
  - Nested function calls
  - Recursive function calls
 
-Currently, two methods are used to return results from functions.
-Using the output stream may cause to poor performance.
-Assigning a variable has more verbose code.
+Generally, two methods are used to return results from functions.
+Using the output stream may cause poor performance.
+Assigning a variable in the function and obtaining its value by the caller has longer code.
 
 
 With this Bash extension, functions can be used in both ways.
