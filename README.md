@@ -66,8 +66,8 @@ Without the option *-$*, the result is directly printed to the standard output.
 To capture these numbers in an array variable, call it as follows.
 
     my_seq -$ 10
-    numbers="${RETVAL[@]}"
-    echo "numbers: ${numbers[@]}"
+    numbers=("${RETVAL[@]}")
+    echo "There are ${#numbers[@]} numbers: ${numbers[@]}"
 
 # Benchmarks
 

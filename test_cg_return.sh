@@ -96,7 +96,6 @@ main(){
     echo
     echo ------------------------------------------------------------
     echo "--- Testing  empty parameter list ---"
-
     sum -$
     echo "The sum of nothing is ${RETVAL}"
     assert_eq 0 @
@@ -130,9 +129,11 @@ main(){
     echo "--- Testing  array to variable ---"
     sequence -$ 10
     echo
-    local aa="${RETVAL[@]}"
+    local aa=("${RETVAL[@]}")
     echo 'This is returned' "${aa[@]}"
     assert_eq '0 1 4 9 16 25 36 49 64 81'  "${aa[*]}"
+
+
     echo "Number of values: ${#aa[@]}"
     assert_eq 10  "${#aa[@]}"
     echo
@@ -140,7 +141,7 @@ main(){
     echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     echo "--- Testing  array to variable only one element ---"
     sequence -$ 1
-    local aa="${RETVAL[@]}"
+    local aa=("${RETVAL[@]}")
     echo 'This is returned' "${aa[@]}"
     assert_eq  0  "${aa[*]}"
     assert_eq  1  "${#aa[@]}"

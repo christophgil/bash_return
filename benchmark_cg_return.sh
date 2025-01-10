@@ -20,7 +20,7 @@ case ${1:-X} in
        }
        for((i=0;i<N;i++)); do
            my_func -$ $i
-           value=${!RETVAL}
+           value=${RETVAL}
            ((i%100==0)) && echo "i/$N: $i  returned value: $value"
        done
        ;;
