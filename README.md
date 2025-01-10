@@ -12,7 +12,7 @@ Using command substitution to capture the  output stream may cause poor performa
 Conversely, assigning a variable in the function and obtaining its value by the caller is less compact.
 
 
-With this Bash extension, functions can be used in both ways in a very compact way.
+With this Bash extension, functions can be used in both ways.
 see  [Details](./motivation.md).
 
 
