@@ -1,24 +1,15 @@
 /* Author: Christoph Gille   Licence: GNU */
-#include <unistd.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <assert.h>
 #include "bash/loadables.h"
-#define ANSI_RED "\x1B[41m"
-#define ANSI_RESET "\x1B[0m"
-#define ANSI_FG_BLUE "\x1B[34;1m"
-#define RED_ERROR ANSI_RED" Error "ANSI_RESET
+#include "cg_bashbuiltin.h"
 #define DEBUG 0
 
-#define RETURN_FAIL() { if (!interactive_shell) exit_shell(EXECUTION_FAILURE); return EXECUTION_FAILURE;}
 
 int init_retval_builtin(WORD_LIST *list){
   const bool is_retval=posparam_count>0 && !strcmp(dollar_vars[1],"-$");
   if (DEBUG) fprintf(stderr,"This is init_retval_builtin. Has -$: %s  \n",is_retval?"Yes":"No");
   if (is_retval) shift_args(1);
-  bind_variable_value(make_local_variable("__return_var__",0),strdup(is_retval?"1":"0"),0);
-  SHELL_VAR *vs=find_variable("RETVAL");
-  if (vs) VSETATTR(vs,att_invisible);
+  bind_variable_value(make_local_variable("__return_var__",0),strdup(is_retval?"1":"0"),0); // strdup ????
+  set_var_retval_invisible();
   return EXECUTION_SUCCESS;
 }
 char *init_retval_doc[]={
@@ -47,7 +38,7 @@ int set_retval_builtin(WORD_LIST *list){
   }
   if (DEBUG) fprintf(stderr,"Variable __return_var__ is %d\n",is_stdout);
   if (!is_stdout){
-      assign_array_var_from_word_list(convert_var_to_array(bind_global_variable("RETVAL",NULL,0)),list,0);
+      assign_array_var_from_word_list(convert_var_to_array(bind_global_variable(VARNAME_RETVAL,NULL,0)),list,0);
   }else{
     for(;list;list=list->next){
       const char *val=list->word->word;

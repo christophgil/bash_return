@@ -7,13 +7,13 @@ This  Bash extension written in C allows script functions to return numeric or s
 Status: Experimental
 
 
-Generally, two modes are used to return results from functions.
-Using command substitution to capture the  output stream may cause poor performance.
-Conversely, assigning a variable in the function and obtaining its value by the caller is less compact.
+Generally, two methods can be used to return results from functions to the caller of the function.
+(I) Using command substitution to capture the output may cause poor performance.
+(II) Storing the result in a global variable is less compact and requires two statements.
 
 
-With this Bash extension, functions can be used in both ways.
-see  [Details](./motivation.md).
+With this Bash extension, functions can be used in both ways depending on a command line switch.
+See  [Details](./motivation.md).
 
 
 # Installation
@@ -22,16 +22,16 @@ First [Install dependencies](./INSTALL_DEPENDENCIES.md)
 
 Compile:
 
-    compile_C.sh  bashbuiltin_set_retval.c
+    compile_C.sh  bashbuiltin_cg_return.c
 
 # Usage
 
 The compiled builtins must be loaded once.
 
-    enable -f /home/cgille/compiled/bashbuiltin_set_retval.so   init_retval set_retval
+    enable -f /home/cgille/compiled/bashbuiltin_cg_return.so   init_retval set_retval
 
 The Bash builtin *init_retval* must be called at the top of the function body.
-The result of the function is set  with the builtin *set_retval*.
+The return value of the function is set  with the builtin *set_retval*.
 
     square(){
         init_retval
@@ -39,15 +39,17 @@ The result of the function is set  with the builtin *set_retval*.
         set_retval $(($1*$1))
     }
 
-When the function is called with the leading option -$, then the returned value is obtained from a
-variable whose name is stored in the global variable *RETVAL*.  This is possible because Bash is not
-multi-threaded. Normally, dollar signs need to be quoted in UNIX shells. Note that the dollar sign does not need to be quoted here because it is followed by
-a space. An unusual option character has been chosen to not interfere with other options.
+When the function is called with the switch -$, then the returned value is obtained from a variable
+whose name is stored in the global variable *RETVAL*.  Usage of a global variable is possible
+because Bash is not multi-threaded. Normally, dollar signs need to be quoted in UNIX shells. Note
+that the dollar sign does not need to be quoted here because it is followed by a space. This rather
+unusual command line switch is unlikely to be used already.  Note that *-$* must be the first
+parameter.
 
     square -$  3
     echo "The Square of 3 is ${RETVAL}"
 
-Without the option *-$*, the result is directly printed to the standard output.
+Without the option *-$*, the result is printed to the standard output.
 
     square 3
 
@@ -69,11 +71,11 @@ To capture these numbers in an array variable, call it as follows.
 
     my_seq -$ 10
     numbers=("${RETVAL[@]}")
-    echo "There are ${#numbers[@]} numbers: ${numbers[@]}"
+    echo "There are ${#numbers[@]} numbers. These are ${numbers[@]}"
 
 # Benchmarks
 
-We are doing 40000 function calls with the script *benchmark_set_retval.sh*
+Performing 40000 function calls with the script *benchmark_set_retval.sh*
 
     classical      51 Seconds
     Novel method  1.2 Seconds
