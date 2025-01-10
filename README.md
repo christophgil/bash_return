@@ -8,7 +8,7 @@ Status: Experimental
 
 
 Generally, two modes are used to return results from functions.
-Using the output stream may cause poor performance.
+Using command substitution to capture the  output stream may cause poor performance.
 Conversely, assigning a variable in the function and obtaining its value by the caller is less compact.
 
 
