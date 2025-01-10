@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "bash/loadables.h"
 #define ANSI_RED "\x1B[41m"
 #define ANSI_RESET "\x1B[0m"
@@ -11,6 +12,9 @@
 #define DEBUG 0
 
 #define VARNAME_MAX 256
+
+#define RETURN_FAIL() { if (!interactive_shell) exit_shell(EXECUTION_FAILURE); return EXECUTION_FAILURE;}
+
 
 static bool get_function_name(char *n){ // Can funcname be obtained more easily ?
   n=stpcpy(n,FUNCNAME_PFX);
@@ -58,8 +62,6 @@ char *init_retval_doc[]={
 };
 
 struct builtin init_retval_struct={"init_retval",init_retval_builtin,BUILTIN_ENABLED,init_retval_doc,"init_retval",0};
-
-
 int set_retval_builtin(WORD_LIST *list){
   if (DEBUG) fprintf(stderr,"This is set_retval_builtin\n");
   bool is_stdout=true;
@@ -67,8 +69,7 @@ int set_retval_builtin(WORD_LIST *list){
     const SHELL_VAR *v=find_variable("__return_var__");
     if (!v || !local_p(v)){
       report_error(RED_ERROR"set_retval without previous init_retval\n");
-       exit_shell(EXECUTION_FAILURE);
-      return EXECUTION_FAILURE;
+      RETURN_FAIL();
     }else{
       if (v->value && *v->value=='1') is_stdout=false;
     }
@@ -85,7 +86,12 @@ int set_retval_builtin(WORD_LIST *list){
       puts(val?val:"");
     }
   }
-  bind_global_variable("RETVAL",strdup(vname),0);
+  //  const char *s=strdup(vname);
+  char *s=vname; /* Why not const char?   Is it freed?  */
+  SHELL_VAR *sv=bind_global_variable("RETVAL",s,0);
+  assert(sv->value!=s); /* Sounds like I do not need stdup ???? */
+
+
   return EXECUTION_SUCCESS;
 }
 char *set_retval_doc[]={
@@ -103,28 +109,24 @@ struct builtin set_retval_struct={"set_retval",set_retval_builtin,BUILTIN_ENABLE
 int retval_to_array_builtin(WORD_LIST *list){
   if (!list || !list->word || !list->word->word){
     report_error(E"Missing parameter array-name\n","");
-     exit_shell(EXECUTION_FAILURE);
-    return EXECUTION_FAILURE;
+    RETURN_FAIL();
   }
   const char *array_name=list->word->word;
   SHELL_VAR* dst=find_variable(array_name); /* The array to be assigned */
   if (!dst){
     report_error(E"no such variable.\n",array_name);
-    exit_shell(EXECUTION_FAILURE);
-    return EXECUTION_FAILURE;
+    RETURN_FAIL();
   }
   const SHELL_VAR *r=find_variable("RETVAL");
   if (!r || !r->value){
     report_error(E"RETVAL not defined.\n","");
-    exit_shell(EXECUTION_FAILURE);
-    return EXECUTION_FAILURE;
+    RETURN_FAIL();
   }
   SHELL_VAR* src=find_variable(r->value); /* The array defined in the previously called function  */
   // see copy_variable() in /home/_cache/cgille/build/bash-5.2.37/variables.c
   if (!array_p(dst)){
     report_error(E"Not an array.\n",array_name);
-     exit_shell(EXECUTION_FAILURE);
-    return EXECUTION_FAILURE;
+        RETURN_FAIL();
   }
   if (array_p(src)){
     array_dispose(array_cell(dst));     /* Free memory of current array */ // Is this OK
