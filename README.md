@@ -9,10 +9,10 @@ Status: Experimental. Successfully Tested:
  - Nested function calls
  - Recursive function calls
 
+Currently, two methods are used to return results from functions, both of which are error prone or lead to poor performance, respectively,
+see  [Details](./motivation.md).
 
-
-This Bash extension has been developed because the standard way of returning results from script functions often leads to poor performance of scripts.
-This well known limitation has been discussed extensively. See  [Details](./motivation.md).
+Both problems are efficiently solved with this Bash extension.
 
 # Installation
 
