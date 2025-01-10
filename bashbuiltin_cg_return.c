@@ -19,7 +19,7 @@ char *init_retval_doc[]={
   "",
   "Internally:",
   " - Shifts away a leading -$ option",
-  " - sets shell variable __return_var__ to 'RETURNED_FROM_$FUNCNAME'",
+  " - sets shell variable __return_var__ to 0 or 1",
   (char*)NULL
 };
 
