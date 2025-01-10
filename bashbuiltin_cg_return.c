@@ -8,24 +8,17 @@
 #define ANSI_RESET "\x1B[0m"
 #define ANSI_FG_BLUE "\x1B[34;1m"
 #define RED_ERROR ANSI_RED" Error "ANSI_RESET
-
 #define DEBUG 0
 
-#define VARNAME_MAX 256
-
 #define RETURN_FAIL() { if (!interactive_shell) exit_shell(EXECUTION_FAILURE); return EXECUTION_FAILURE;}
-
 
 int init_retval_builtin(WORD_LIST *list){
   const bool is_retval=posparam_count>0 && !strcmp(dollar_vars[1],"-$");
   if (DEBUG) fprintf(stderr,"This is init_retval_builtin. Has -$: %s  \n",is_retval?"Yes":"No");
   if (is_retval) shift_args(1);
   bind_variable_value(make_local_variable("__return_var__",0),strdup(is_retval?"1":"0"),0);
-
-    /* In case of forgotten set_retval - clear previous variable content  */
-  bind_global_variable("RETVAL",NULL,0);
-
-
+  SHELL_VAR *vs=find_variable("RETVAL");
+  if (vs) VSETATTR(vs,att_invisible);
   return EXECUTION_SUCCESS;
 }
 char *init_retval_doc[]={
@@ -65,11 +58,9 @@ int set_retval_builtin(WORD_LIST *list){
 }
 char *set_retval_doc[]={
   "Sets the return value of a function.",
-  "Argument: The  string to be returned.",
-  "Usually placed before a return statement or at the end of the function body",
+  "Argument: The  string[s] to be returned.",
+  "Placed before each return statement and at the end of the function body",
   (char*)NULL
 };
 
 struct builtin set_retval_struct={"set_retval",set_retval_builtin,BUILTIN_ENABLED,set_retval_doc,"set_retval",0};
-
-/* Is this OK?   Memory leaks? */
